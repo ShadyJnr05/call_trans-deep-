@@ -1,22 +1,123 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SoundScript</title>
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background:#f7f9fc; }
-        h1 { text-align:center; color:#2c3e50; }
-        .container { margin: 20px 0; padding:20px; background:white; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
-        input, select, button { padding:10px; margin:5px 0; width:100%; border-radius:5px; border:1px solid #ccc; }
-        button { cursor:pointer; background:#3498db; color:white; border:none; transition:0.2s; }
-        button:hover { background:#2980b9; }
-        #result, #translation { background:#ecf0f1; padding:10px; border-radius:5px; margin:10px 0; white-space: pre-wrap; }
+        :root {
+            --primary: #3498db;
+            --primary-dark: #2c82c9;
+            --bg-light: #eef6fc;
+            --text-dark: #2c3e50;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: "Poppins", Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(145deg, #cce7ff, #eaf6ff);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        h1 {
+            margin-top: 30px;
+            color: var(--text-dark);
+            font-size: 2.2em;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            background: white;
+            width: 90%;
+            max-width: 420px;
+            padding: 25px 20px;
+            margin: 15px 0;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            transition: 0.3s ease;
+        }
+
+        .container:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        input, select, button {
+            padding: 12px;
+            margin: 8px 0;
+            width: 100%;
+            border-radius: 10px;
+            border: 1px solid #ccddee;
+            font-size: 15px;
+            outline: none;
+            transition: 0.2s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 6px rgba(52,152,219,0.4);
+        }
+
+        button {
+            background: var(--primary);
+            color: white;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        button:hover {
+            background: var(--primary-dark);
+            transform: scale(1.02);
+        }
+
+        #result, #translation {
+            background: var(--bg-light);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 15px;
+            color: #333;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            box-shadow: inset 0 0 4px rgba(0,0,0,0.05);
+        }
+
+        #auth-msg {
+            margin-top: 8px;
+            color: #2980b9;
+            font-size: 0.95em;
+            text-align: center;
+        }
+
+        @media (max-width: 500px) {
+            h1 {
+                font-size: 1.8em;
+            }
+            .container {
+                padding: 20px 15px;
+                border-radius: 14px;
+            }
+            input, select, button {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
     </style>
 </head>
 <body>
-    <h1>SoundScript</h1>
+    <h1>🔊 SoundScript</h1>
 
     <div class="container" id="auth-section">
-        <h3>Login / Signup</h3>
+        <h3 style="text-align:center; color:#34495e;">Login / Signup</h3>
         <input type="text" id="username" placeholder="Username">
         <input type="password" id="password" placeholder="Password">
         <button onclick="signup()">Sign Up</button>
@@ -25,12 +126,12 @@
     </div>
 
     <div class="container" id="app-section" style="display:none;">
-        <h3>Upload Audio File</h3>
+        <h3 style="text-align:center; color:#34495e;">Upload Audio File</h3>
         <input type="file" id="audio-file" accept="audio/*">
         <button onclick="uploadAudio()">Transcribe Audio</button>
         <div id="result"></div>
 
-        <h3>Translate Transcript</h3>
+        <h3 style="text-align:center; color:#34495e;">Translate Transcript</h3>
         <select id="language">
             <option value="fr">French</option>
             <option value="es">Spanish</option>
@@ -118,6 +219,3 @@
     </script>
 </body>
 </html>
-
-
-
