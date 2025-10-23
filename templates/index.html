@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Call Transcriber</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background:#f7f9fc; }
+        h1 { text-align:center; color:#2c3e50; }
+        .container { margin: 20px 0; padding:20px; background:white; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
+        input, select, button { padding:10px; margin:5px 0; width:100%; border-radius:5px; border:1px solid #ccc; }
+        button { cursor:pointer; background:#3498db; color:white; border:none; transition:0.2s; }
+        button:hover { background:#2980b9; }
+        #result, #translation { background:#ecf0f1; padding:10px; border-radius:5px; margin:10px 0; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1>Call Transcriber</h1>
+
+    <div class="container" id="auth-section">
+        <h3>Login / Signup</h3>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="signup()">Sign Up</button>
+        <button onclick="login()">Login</button>
+        <div id="auth-msg"></div>
+    </div>
+
+    <div class="container" id="app-section" style="display:none;">
+        <h3>Upload Audio File</h3>
+        <input type="file" id="audio-file" accept="audio/*">
+        <button onclick="uploadAudio()">Transcribe Audio</button>
+        <div id="result"></div>
+
+        <h3>Translate Transcript</h3>
+        <select id="language">
+            <option value="fr">French</option>
+            <option value="es">Spanish</option>
+            <option value="de">German</option>
+            <option value="pt">Portuguese</option>
+        </select>
+        <button onclick="translateText()">Translate</button>
+        <div id="translation"></div>
+
+        <button onclick="downloadTranscript()">Download Transcript</button>
+    </div>
+
+    <script>
+        function showMessage(elementId, msg) {
+            document.getElementById(elementId).innerText = msg;
+        }
+
+        function signup(){
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            fetch("/signup", {
+                method:"POST",
+                headers: {"Content-Type":"application/json"},
+                body: JSON.stringify({username,password})
+            }).then(r=>r.json()).then(data=>{
+                showMessage("auth-msg", data.message);
+            });
+        }
+
+        function login(){
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            fetch("/login", {
+                method:"POST",
+                headers: {"Content-Type":"application/json"},
+                body: JSON.stringify({username,password})
+            }).then(r=>r.json()).then(data=>{
+                showMessage("auth-msg", data.message);
+                if(data.status=="success"){
+                    document.getElementById("auth-section").style.display="none";
+                    document.getElementById("app-section").style.display="block";
+                }
+            });
+        }
+
+        function uploadAudio(){
+            const file = document.getElementById("audio-file").files[0];
+            if(!file){ alert("Please select a file"); return; }
+            const formData = new FormData();
+            formData.append("file", file);
+            showMessage("result","Transcribing...");
+            fetch("/upload", {method:"POST", body: formData})
+            .then(r=>r.json())
+            .then(data=>{
+                if(data.status=="success"){
+                    showMessage("result", data.transcript);
+                }else{
+                    showMessage("result", data.message);
+                }
+            });
+        }
+
+        function translateText(){
+            const transcript = document.getElementById("result").innerText;
+            const target_lang = document.getElementById("language").value;
+            if(!transcript){ alert("No transcript to translate"); return; }
+            showMessage("translation","Translating...");
+            fetch("/translate", {
+                method:"POST",
+                headers: {"Content-Type":"application/json"},
+                body: JSON.stringify({transcript,target_lang})
+            }).then(r=>r.json()).then(data=>{
+                if(data.status=="success"){
+                    showMessage("translation", data.translation);
+                }else{
+                    showMessage("translation", data.message);
+                }
+            });
+        }
+
+        function downloadTranscript(){
+            window.location.href="/download";
+        }
+    </script>
+</body>
+</html>
